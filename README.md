@@ -1,6 +1,8 @@
 # Mock CAS Server
 
-This is a CAS server implementation targeted as a simple mock, but still functional.
+This is a CAS server implementation targeted as a simple mock, but still functional. The CAS servers follows the specification of https://apereo.github.io/cas/4.2.x/protocol/CAS-Protocol.html. The used CAS protocol version is 2.0.
+
+Proxy handling is not implemented, only the SSO login process (routes `/login` and `/serviceValidate` in CAS 2.0).
 
 Features:
 
