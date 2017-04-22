@@ -1,0 +1,31 @@
+{
+  "name": "cas-server-simulator",
+  "description": "Simulated CAS server for debugging/developing purposes only",
+  "version": "0.0.1",
+  "main": "app/cas_server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github...."
+  },
+  "dependencies": {
+    "cookie-session": "^2.0.0-beta.1",
+    "express": "^4.5",
+    "lodash": "~4.17",
+    "path": "^0.12.7",
+    "randomstring": "^1.1.5",
+    "winston": "~0.7.3",
+    "xmlbuilder": "^4.1.0"
+  },
+  "scripts": {
+    "start": "node app/cas_server.js",
+    "api-doc": "node node_modules/aglio/bin/aglio.js -i CAS_API.apib -o doc/api/cas-api.html && start doc/api/cas-api.html",
+    "test": "mocha test/api/**/*.test.js",
+    "build": "sh deploy/build.sh",
+    "package": "deploy-node -v -b -o dist --source-folder=app --version-file=version.json",
+    "snapshot": "sh deploy/build.sh && sh deploy/copy_to_atvulicl9.sh",
+    "package:snapshot": "deploy-node -v -b -o dist --source-folder=app --version-file=version.json --timestamp"
+  },
+  "devDependencies": {
+    "aglio": "^2.3.0"
+  }
+}

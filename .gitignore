@@ -1,0 +1,7 @@
+.idea/
+.tmp/
+**/node_modules
+**/npm-debug.log
+dist/
+/HTML5Application/nbproject/private/
+/nbproject/private/

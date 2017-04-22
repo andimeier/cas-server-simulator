@@ -1,0 +1,58 @@
+module.exports = {
+    "port": 3002,
+    "listenOn": "localhost",
+    "accessControlAllowOrigin": "http://frontend.server.com:9000",
+
+    /**
+     * database credentials
+     */
+    "db": {
+        "host": "localhost",
+        "user": "hermes",
+        "password": "password",
+        "database": "hermes"
+    },
+
+	/**
+	 * logLevel
+	 * @type {string} one of error|warn|info|verbose|debug
+	 */
+    "logLevel": "verbose", // one of [ error, warn, info, verbose, debug ]
+
+    /**
+     * directories for stored files (artifacts, packages)
+     */
+    "uploadDir": "uploads",
+    "bundleDir": "bundles",
+
+    /**
+     * import settings
+     */
+    "importDir": "import", // directory which will be scanned for new files to be imported
+    "importDoneDir": "importDone", // directory into which the imported files will be moved
+    "scanInterval": 0.5, // interval of scanning the import directory for new files, in minutes, 0 to disable
+
+    /**
+     * session configuration
+     */
+    "sessionConf": {
+        secret: "OE2",
+        resave: true,
+        saveUninitialized: false
+    },
+
+    /**
+     * CAS settings
+     */
+    "cas": {
+        // CAS service address
+        cas_url: "https://atvulicl9.ww300.siemens.net/cas-server",
+        // service address, under which the Flint backend is running
+        service_url: "http://atvulicl9.ww300.siemens.net/flint_rest",
+        cas_version: "2.0",
+        renew: false,
+        session_name: "cas_user",
+        session_info: "cas_userinfo",
+        destroy_session: false
+    }
+};
