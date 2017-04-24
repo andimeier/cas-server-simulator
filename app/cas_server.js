@@ -4,6 +4,7 @@ var session = require('express-session');
 var path = require('path');
 
 
+
 /**
  * require a module relative to the application root
  * 
@@ -13,9 +14,11 @@ var path = require('path');
 global.rootRequire = function (name) {
     return require(path.resolve(__dirname, name));
 };
-
 var setup = require('./utils/setup');
 global.logger = setup.getLogger();
+
+
+var cas = require('./routes/cas');
 
 // configs
 var config = rootRequire('config/config');
@@ -52,3 +55,22 @@ app.listen(config.port, config.listenOn);
 logger.info('Listening on port ' + config.port + (config.listenOn ? ' on ' + config.listenOn : '') + ' ...');
 
 exports.app = app;
+
+
+/**
+ * clear obsolete tickets from time to time
+ *
+ * use setTimeout instead of setInterval in order to make sure that
+ * there can be no overlapping execution of two instances of the
+ * periodic job
+ */
+function periodicClean() {
+
+    cas.removeExpiredTickets();
+
+    // schedule next task
+    setTimeout(periodicClean, 1000 * 60 * config.removeObsoleteTicketsInterval);
+}
+
+
+periodicClean();

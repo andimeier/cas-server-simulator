@@ -7,7 +7,7 @@ var _ = require('lodash');
 
 var tickets = [];
 
-var EXPIRY_TIME = 5 * 60; // service ticket expires after 5 minutes
+var EXPIRY_TIME = 60 * config.serviceTicketExpiry;
 
 /**
  * simulate positive CAS login
@@ -24,10 +24,6 @@ exports.login = function (req, res) {
         res.status(400).send('missing parameter "service"');
         return;
     }
-
-    // by the way, remove obsolete tickets
-    removeExpiredTickets();
-
 
     service = url.parse(req.query.service, true);
 
@@ -101,12 +97,19 @@ exports.validate = function (req, res) {
 /**
  * remove all expired tickets
  */
-function removeExpiredTickets() {
+exports.removeExpiredTickets = function () {
     var now;
+    var removed;
+
+    logger.verbose('run "remove obsolete tickets"');
 
     now = new Date().getTime();
 
-    _.remove(tickets, function (ticket) {
+    removed = _.remove(tickets, function (ticket) {
         return ticket.validUntil < now;
     });
-}
+
+    if (removed.length) {
+        logger.verbose(removed.length + ' ticket(s) removed');
+    }
+};
