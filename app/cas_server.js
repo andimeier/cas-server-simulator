@@ -33,7 +33,18 @@ var app = express();
 
 // ------ routes ------
 
+app.use(function (req, res, next) {
+    console.log('----> incoming request: ' + req.originalUrl);
+    next();
+});
+
 app.use('/', mainRouter);
+
+app.use(function (req, res) {
+    logger.verbose('Unrecognized route: ', {url: req.originalUrl}, JSON.stringify(new Error().stack, null, 2));
+    res.sendStatus(404);
+});
+
 
 // ------ start the server ------
 

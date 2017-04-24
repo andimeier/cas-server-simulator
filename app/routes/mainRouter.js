@@ -8,6 +8,7 @@ var cas = require('./cas');
 
 // --- routes ---
 router.get('/version', version.getVersion);
+router.get('/tickets', cas.getTickets);
 
 router.get('/login', cas.login);
 router.get('/serviceValidate', cas.validate);

@@ -25,6 +25,9 @@ exports.login = function (req, res) {
         return;
     }
 
+    // by the way, remove obsolete tickets
+    removeExpiredTickets();
+
 
     service = url.parse(req.query.service, true);
 
@@ -34,10 +37,28 @@ exports.login = function (req, res) {
 
     tickets.push({
         ticket: ticket,
+        service: req.query.service,
         validUntil: new Date().getTime() + EXPIRY_TIME * 1000
     });
 
     res.redirect(service.format());
+};
+
+
+/**
+ * lists all current service tickets
+ *
+ * @param req
+ * @param res
+ */
+exports.getTickets = function (req, res) {
+    logger.verbose('in getTickets ...');
+    var allTickets;
+
+    allTickets = _.map(tickets, function (ticket) {
+        return ticket.ticket + '|' + ticket.service + '|' + ticket.validUntil;
+    }).join('\n');
+    res.send(allTickets);
 };
 
 
@@ -50,6 +71,8 @@ exports.login = function (req, res) {
 exports.validate = function (req, res) {
     var ticket;
     var foundTicket;
+
+    logger.verbose('in /validate ...');
 
     ticket = req.query.ticket;
 
@@ -74,3 +97,16 @@ exports.validate = function (req, res) {
         res.send(xml.fail('INVALID_TICKET', ticket));
     }
 };
+
+/**
+ * remove all expired tickets
+ */
+function removeExpiredTickets() {
+    var now;
+
+    now = new Date().getTime();
+
+    _.remove(tickets, function (ticket) {
+        return ticket.validUntil < now;
+    });
+}
