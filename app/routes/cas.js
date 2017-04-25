@@ -3,11 +3,16 @@ var url = require('url');
 var randomstring = require('randomstring');
 var config = rootRequire('config/config');
 var xml = rootRequire('utils/xml');
+var user = rootRequire('utils/user');
 var _ = require('lodash');
+var handlebars = require('handlebars');
+var fs = require('fs');
+var path = require('path');
 
 var tickets = [];
 
 var EXPIRY_TIME = 60 * config.serviceTicketExpiry;
+
 
 /**
  * simulate positive CAS login
@@ -17,8 +22,8 @@ var EXPIRY_TIME = 60 * config.serviceTicketExpiry;
  */
 exports.login = function (req, res) {
     logger.verbose('in login ...');
-    var ticket;
     var service;
+    var ticket;
 
     if (!req.query.service) {
         res.status(400).send('missing parameter "service"');
@@ -27,16 +32,53 @@ exports.login = function (req, res) {
 
     service = url.parse(req.query.service, true);
 
-    // add service ticket
-    ticket = 'ST-' + randomstring.generate(20);
-    service.query.ticket = ticket;
+    renderLoginForm(req.query.service, function (err, html) {
+        if (err) {
+            res.status(500).send(err);
+        }
 
-    tickets.push({
-        ticket: ticket,
-        service: req.query.service,
-        validUntil: new Date().getTime() + EXPIRY_TIME * 1000
+        res.send(html);
     });
+    return;
 
+
+    // generate service ticket
+    ticket = generateServiceTicket(req.query.service).ticket;
+
+    service.query.ticket = ticket;
+    res.redirect(service.format());
+};
+
+
+/**
+ * process submitted login data
+ *
+ * @param req
+ * @param res
+ */
+exports.loginForm = function (req, res) {
+    logger.verbose('in loginForm ...');
+    var ticket;
+    var service;
+
+    if (!req.query.service) {
+        res.status(400).send('missing parameter "service"');
+        return;
+    }
+
+    if (!req.query.username) {
+        res.status(400).send('missing form parameter "username"');
+        return;
+    }
+
+    user.setUser(req.query.username);
+
+    service = url.parse(req.query.service, true);
+
+    // generate service ticket
+    ticket = generateServiceTicket(req.query.service).ticket;
+
+    service.query.ticket = ticket;
     res.redirect(service.format());
 };
 
@@ -67,6 +109,7 @@ exports.getTickets = function (req, res) {
 exports.validate = function (req, res) {
     var ticket;
     var foundTicket;
+    var userId;
 
     logger.verbose('in /validate ...');
 
@@ -87,9 +130,12 @@ exports.validate = function (req, res) {
     foundTicket = _.remove(tickets, (t) => t.ticket === ticket);
 
     if (foundTicket.length) {
+        userId = user.getUser();
+        logger.verbose('ticket ' + ticket + ' has been approved successfully, sending OK response with user [' + userId + ']');
         // found ticket, valid!
-        res.send(xml.success(config.cas.userId));
+        res.send(xml.success(userId));
     } else {
+        logger.verbose('ticket ' + ticket + ' has been rejected, sending NOK response');
         res.send(xml.fail('INVALID_TICKET', ticket));
     }
 };
@@ -113,3 +159,51 @@ exports.removeExpiredTickets = function () {
         logger.verbose(removed.length + ' ticket(s) removed');
     }
 };
+
+
+/**
+ * generates a service ticket for the specified service and remembers it
+ *
+ * @param service {string} the service for which the service ticket should be generated
+ * @return {object} the generated service ticket
+ */
+function generateServiceTicket(service) {
+    var ticket;
+    var ticketObject;
+
+    ticket = 'ST-' + randomstring.generate(20);
+
+    ticketObject = {
+        ticket: ticket,
+        service: service,
+        validUntil: new Date().getTime() + EXPIRY_TIME * 1000
+    };
+    tickets.push(ticketObject);
+
+    return ticketObject;
+}
+
+
+/**
+ * renders the login form
+ *
+ * @param service {string} the requesting service
+ * @param callback {function} the callback function which will be called with (err, htmlOutput)
+ */
+function renderLoginForm(service, callback) {
+    var loginFormTemplate = rootRequire('routes/login/login.hbs');
+    var template;
+
+    fs.readFile(path.resolve(__dirname, 'login/login.hbs'), 'utf-8', function (error, source) {
+        var template;
+
+        if (error) {
+            callback(error);
+
+        }
+
+        debugger;
+        template = handlebars.compile(source);
+        callback(null, template({service: service}));
+    });
+}

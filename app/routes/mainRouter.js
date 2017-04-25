@@ -11,6 +11,8 @@ router.get('/version', version.getVersion);
 router.get('/tickets', cas.getTickets);
 
 router.get('/login', cas.login);
+router.get('/loginForm', cas.loginForm);
+router.post('/login', cas.loginForm);
 router.get('/serviceValidate', cas.validate);
 
 //router.get('/getUser', user.getUser);

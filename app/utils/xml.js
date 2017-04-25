@@ -18,7 +18,7 @@ exports.success = function (userId) {
     return '<cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">' +
         '<cas:authenticationSuccess>' +
         '<cas:user>' + userId + '</cas:user>' +
-        '<cas:proxyGrantingTicket>PGTIOU-84678-8a9d...</cas:proxyGrantingTicket>' +
+        '<cas:proxyGrantingTicket>PGTIOU-123456-test-test-test</cas:proxyGrantingTicket>' +
         '</cas:authenticationSuccess>' +
         '</cas:serviceResponse>';
 };
