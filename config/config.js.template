@@ -4,5 +4,7 @@ module.exports = {
     logLevel: 'info', // one of [ error, warn, info, verbose, debug ]
     cas: { // central authentication (CAS) config
         userId: 'alex'
-    }
+    },
+    removeObsoleteTicketsInterval: 5, // in minutes
+    serviceTicketExpiry: 5 // in minutes
 };

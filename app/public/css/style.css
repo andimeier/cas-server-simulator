@@ -1,4 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Bree+Serif);
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
 ::selection {
 	color: #fff;
@@ -18,7 +19,7 @@
 
 body {
 	background-color: #87b3c0;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-family: 'Open Sans', sans-serif;
 	font-weight:300;
 	text-align: left;
 	text-decoration: none;
