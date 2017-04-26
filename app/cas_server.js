@@ -11,6 +11,7 @@ var path = require('path');
  * @param name {string} the module path, relative to the application root, e.g. 'config/settings'
  * @returns {*} the require'd result
  */
+global.appRoot = __dirname;
 global.rootRequire = function (name) {
     return require(path.resolve(__dirname, name));
 };
@@ -35,6 +36,7 @@ var app = express();
 
 
 // ------ routes ------
+app.use('/css', express.static(path.join(__dirname, 'public/css')));
 
 app.use(function (req, res, next) {
     console.log('----> incoming request: ' + req.originalUrl);
