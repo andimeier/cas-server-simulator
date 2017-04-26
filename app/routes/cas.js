@@ -143,7 +143,7 @@ exports.removeExpiredTickets = function () {
     var now;
     var removed;
 
-    logger.verbose('run "remove obsolete tickets"');
+    logger.silly('run "remove obsolete tickets"');
 
     now = new Date().getTime();
 
@@ -153,6 +153,9 @@ exports.removeExpiredTickets = function () {
 
     if (removed.length) {
         logger.verbose(removed.length + ' ticket(s) removed');
+        removed.forEach(function (removedTicket) {
+            logger.silly('removed ticket: ' + removedTicket.ticket);
+        });
     }
 };
 
