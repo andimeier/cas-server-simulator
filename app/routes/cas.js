@@ -3,7 +3,6 @@ var url = require('url');
 var randomstring = require('randomstring');
 var config = rootRequire('config/config');
 var xml = rootRequire('utils/xml');
-var user = rootRequire('utils/user');
 var _ = require('lodash');
 var handlebars = require('handlebars');
 var fs = require('fs');
@@ -39,14 +38,6 @@ exports.login = function (req, res) {
 
         res.send(html);
     });
-    return;
-
-
-    // generate service ticket
-    ticket = generateServiceTicket(req.query.service).ticket;
-
-    service.query.ticket = ticket;
-    res.redirect(service.format());
 };
 
 
@@ -71,12 +62,10 @@ exports.loginForm = function (req, res) {
         return;
     }
 
-    user.setUser(req.query.username);
-
     service = url.parse(req.query.service, true);
 
     // generate service ticket
-    ticket = generateServiceTicket(req.query.service).ticket;
+    ticket = generateServiceTicket(req.query.service, req.query.username).ticket;
 
     service.query.ticket = ticket;
     res.redirect(service.format());
@@ -127,10 +116,17 @@ exports.validate = function (req, res) {
         return;
     }
 
-    foundTicket = _.remove(tickets, (t) => t.ticket === ticket);
+    foundTicket = _.remove(tickets, (t) => t.ticket === ticket)[0];
 
-    if (foundTicket.length) {
-        userId = user.getUser();
+    // check if not expired
+    if (ticket.validUntil < new Date().getTime()) {
+        // ticket has expired
+        foundTicket = undefined;
+    }
+
+
+    if (foundTicket) {
+        userId = foundTicket.userId;
         logger.verbose('ticket ' + ticket + ' has been approved successfully, sending OK response with user [' + userId + ']');
         // found ticket, valid!
         res.send(xml.success(userId));
@@ -165,9 +161,10 @@ exports.removeExpiredTickets = function () {
  * generates a service ticket for the specified service and remembers it
  *
  * @param service {string} the service for which the service ticket should be generated
+ * @param userId {string} the username associated with the service ticket
  * @return {object} the generated service ticket
  */
-function generateServiceTicket(service) {
+function generateServiceTicket(service, userId) {
     var ticket;
     var ticketObject;
 
@@ -176,6 +173,7 @@ function generateServiceTicket(service) {
     ticketObject = {
         ticket: ticket,
         service: service,
+        userId: userId,
         validUntil: new Date().getTime() + EXPIRY_TIME * 1000
     };
     tickets.push(ticketObject);

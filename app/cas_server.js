@@ -1,6 +1,5 @@
 'use strict';
 var express = require('express');
-var session = require('express-session');
 var path = require('path');
 
 
@@ -15,8 +14,7 @@ global.appRoot = __dirname;
 global.rootRequire = function (name) {
     return require(path.resolve(__dirname, name));
 };
-var setup = require('./utils/setup');
-global.logger = setup.getLogger();
+global.logger = require('./utils/logger');
 
 
 var cas = require('./routes/cas');
