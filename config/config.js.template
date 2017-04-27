@@ -2,9 +2,6 @@ module.exports = {
     port: 3003,
     listenOn: 'localhost',
     logLevel: 'info', // one of [ error, warn, info, verbose, debug ]
-    cas: { // central authentication (CAS) config
-        userId: 'alex'
-    },
     removeObsoleteTicketsInterval: 5, // in minutes
     serviceTicketExpiry: 5 // in minutes
 };

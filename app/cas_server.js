@@ -14,17 +14,20 @@ global.appRoot = __dirname;
 global.rootRequire = function (name) {
     return require(path.resolve(__dirname, name));
 };
-global.logger = require('./utils/logger');
+global.routeRequire = function (name) {
+    return require(path.resolve(__dirname, 'routes', name));
+};
+global.logger = rootRequire('utils/logger');
 
 
-var cas = require('./routes/cas');
+var serviceTickets = rootRequire('utils/serviceTickets');
 
 // configs
 var config = rootRequire('config/config');
 
 
 // router
-var mainRouter = require('./routes/mainRouter');
+var mainRouter = routeRequire('mainRouter');
 
 
 //TODO CONFIG??
@@ -66,7 +69,7 @@ exports.app = app;
  */
 function periodicClean() {
 
-    cas.removeExpiredTickets();
+    serviceTickets.removeExpiredTickets();
 
     // schedule next task
     setTimeout(periodicClean, 1000 * 60 * config.removeObsoleteTicketsInterval);

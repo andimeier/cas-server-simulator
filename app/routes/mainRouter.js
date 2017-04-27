@@ -1,19 +1,23 @@
 'use strict';
 var router = require('express').Router({ mergeParams: true });
-var version = require('./version/version');
 
 var config = rootRequire('config/config');
 
-var cas = require('./cas');
+var validate = routeRequire('validate/validate');
+var tickets = routeRequire('tickets/tickets');
+var login = routeRequire('login/login');
+var version = routeRequire('version/version');
 
 // --- routes ---
 router.get('/version', version.getVersion);
-router.get('/tickets', cas.getTickets);
 
-router.get('/login', cas.login);
-router.get('/loginForm', cas.loginForm);
-router.post('/login', cas.loginForm);
-router.get('/serviceValidate', cas.validate);
+router.get('/tickets', tickets.getTickets);
+
+router.get('/login', login.login);
+router.get('/loginForm', login.submitLoginForm);
+router.post('/login', login.submitLoginForm);
+
+router.get('/serviceValidate', validate.validate);
 
 //router.get('/getUser', user.getUser);
 //router.get('/setUser', user.setUser);

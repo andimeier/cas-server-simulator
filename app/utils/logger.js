@@ -7,22 +7,27 @@ var config = rootRequire('config/config');
  *
  * @return {object} logger objects
  */
-function getLogger() {
-    var logger;
+module.exports = new (winston.Logger)({
+    transports: [
+        new (winston.transports.Console)({
+            level: config.logLevel,
+            handleExceptions: true,
+            timestamp: true,
+            colorize: false
+        })
+    ]
+});
 
-    // production settings for logging
-    logger = new (winston.Logger)({
-        transports: [
-            new (winston.transports.Console)({
-                level: config.logLevel,
-                handleExceptions: true,
-                timestamp: true,
-				colorize: false
-            })
-        ]
-    });
-
-    return logger;
-}
-
-module.exports = getLogger();
+//module.exports = () => {
+//    // production settings for logging
+//    return new (winston.Logger)({
+//        transports: [
+//            new (winston.transports.Console)({
+//                level: config.logLevel,
+//                handleExceptions: true,
+//                timestamp: true,
+//				colorize: false
+//            })
+//        ]
+//    });
+//};
