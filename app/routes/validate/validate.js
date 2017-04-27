@@ -1,8 +1,4 @@
 'use strict';
-var url = require('url');
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
 
 var config = rootRequire('config/config');
 

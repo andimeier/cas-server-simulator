@@ -7,7 +7,7 @@ var config = rootRequire('config/config');
  *
  * @return {object} logger objects
  */
-module.exports = new (winston.Logger)({
+var logger = new (winston.Logger)({
     transports: [
         new (winston.transports.Console)({
             level: config.logLevel,
@@ -18,16 +18,4 @@ module.exports = new (winston.Logger)({
     ]
 });
 
-//module.exports = () => {
-//    // production settings for logging
-//    return new (winston.Logger)({
-//        transports: [
-//            new (winston.transports.Console)({
-//                level: config.logLevel,
-//                handleExceptions: true,
-//                timestamp: true,
-//				colorize: false
-//            })
-//        ]
-//    });
-//};
+module.exports = logger;

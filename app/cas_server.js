@@ -2,23 +2,7 @@
 var express = require('express');
 var path = require('path');
 
-
-
-/**
- * require a module relative to the application root
- * 
- * @param name {string} the module path, relative to the application root, e.g. 'config/settings'
- * @returns {*} the require'd result
- */
-global.appRoot = __dirname;
-global.rootRequire = function (name) {
-    return require(path.resolve(__dirname, name));
-};
-global.routeRequire = function (name) {
-    return require(path.resolve(__dirname, 'routes', name));
-};
-global.logger = rootRequire('utils/logger');
-
+require('./utils/setGlobals');
 
 var serviceTickets = rootRequire('utils/serviceTickets');
 
@@ -40,7 +24,7 @@ var app = express();
 app.use('/css', express.static(path.join(__dirname, 'public/css')));
 
 app.use(function (req, res, next) {
-    console.log('----> incoming request: ' + req.originalUrl);
+    logger.silly('----> incoming request: ' + req.originalUrl);
     next();
 });
 
