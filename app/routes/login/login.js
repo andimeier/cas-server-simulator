@@ -55,8 +55,11 @@ exports.submitLoginForm = function (req, res) {
     ticket = tickets.generateServiceTicket(req.query.service, req.query.username).ticket;
 
     // redirect with added ticket as query parameter
+    logger.silly('ticket [' + ticket + '] generated, doing redirect to [' + req.query.service + '] ...');
     let serviceUrl = url.parse(req.query.service, true);
+    serviceUrl.search = undefined; // make sure query object is used for format()
     serviceUrl.query.ticket = ticket;
+    logger.silly('  --> redirect to ' + serviceUrl.format());
     res.redirect(serviceUrl.format());
 };
 

@@ -5,25 +5,28 @@
     <title>Mock CAS Server</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-<form action="loginForm" method="GET" name="login-form" class="login-form">
 
-    <div class="header">
-        <h1>CAS Login</h1>
-        <span>Choose a CAS username</span>
-    </div>
+<div class="margin">
+    <form action="loginForm" method="GET" name="login-form" class="login-form">
 
-    <div class="content">
-        <input name="username" type="text" class="input username" placeholder="Username"/>
-        {{!-- <input name="password" type="password" class="input password" placeholder="Password"/> --}}
-    </div>
-    <input name="service" type="hidden" value="{{service}}"/>
+        <div class="header">
+            <h1>CAS Login</h1>
+            <span>Choose a CAS username</span>
+        </div>
 
-    <div class="footer">
-        <button type="submit" class="button">Login</button>
-    </div>
+        <div class="content">
+            <input name="username" type="text" class="input username" placeholder="Username"/>
+            {{!-- <input name="password" type="password" class="input password" placeholder="Password"/> --}}
+        </div>
+        <input name="service" type="hidden" value="{{service}}"/>
 
-</form>
+        <div class="footer">
+            <button type="submit" class="button">Login</button>
+        </div>
+
+    </form>
+</div>
+
 </body>
 </html>
