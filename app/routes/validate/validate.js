@@ -15,12 +15,14 @@ var tickets = rootRequire('utils/serviceTickets');
  */
 exports.validate = function (req, res) {
     var ticket;
+    var service;
     var foundTicket;
     var userId;
 
     logger.verbose('in /validate ...');
 
     ticket = req.query.ticket;
+    service = req.query.service;
 
     res.set('Content-Type', 'text/xml');
 
@@ -34,16 +36,22 @@ exports.validate = function (req, res) {
         return;
     }
 
-    foundTicket = tickets.pullTicket(ticket);
-
-    if (foundTicket) {
-        userId = foundTicket.userId;
-        logger.verbose('ticket ' + ticket + ' has been approved successfully, sending OK response with user [' + userId + ']');
-        // found ticket, valid!
-        res.send(xml.success(userId));
-    } else {
-        logger.verbose('ticket ' + ticket + ' has been rejected, sending NOK response');
-        res.send(xml.fail('INVALID_TICKET', ticket));
+    if (!service) {
+        res.status(400).send('missing parameter "service"');
+        return;
     }
+
+    tickets.pullTicket(ticket, service, (error, foundTicket) => {
+        if (error) {
+            logger.verbose(`${error.code}: ${error.message}`);
+            res.send(xml.fail(error.code, error.message, ticket));
+        } else {
+            // success
+            userId = foundTicket.userId;
+            logger.verbose(`ticket ${ticket} has been approved successfully, sending OK response with user [${userId}]`);
+            // found ticket, valid!
+            res.send(xml.success(userId));
+        }
+    });
 };
 

@@ -25,16 +25,17 @@ exports.success = function (userId) {
 
 
 /**
- * assemble a "successful authentication" XML message
+ * assemble a "authentication failure" XML message
  *
- * @param reason {string} the error reason
+ * @param code {string} the error reason
+ * @param message {string} the error message
  * @param ticket {string} the ticket which has been rejected
  * @returns {string} the "success" XML message
  */
-exports.fail = function (reason, ticket) {
+exports.fail = function (code, message, ticket) {
     return '<cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">' +
-        '<cas:authenticationFailure code="' + reason + '">' +
-        'Ticket ' + ticket + ' not recognized' +
+        '<cas:authenticationFailure code="' + code + '">' +
+        message +
         '</cas:authenticationFailure>' +
         '</cas:serviceResponse>';
 };

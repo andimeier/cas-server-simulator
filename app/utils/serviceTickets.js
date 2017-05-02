@@ -71,18 +71,47 @@ function removeExpiredTickets() {
  * returns the specified ticket, and at the same time remove it from the list of tickets
  *
  * @param ticketId {string} ticket ID
- * @returns {object} ticket object or undefined if not found (or it already has expired)
+ * @param service {string} service, must be exactly the same as the service of the previously generated ticket
+ * @param callback {function} callback function, will be called with (error, success). On success, parameter error
+ *   will be null and parameter success will be the successfullt validated ticket number (string).
+ *   On error, parameter error will contain an error object of { code: e.g. 'INVALID_TICKET', message {string} )
  */
-function pullTicket(ticketId) {
+function pullTicket(ticketId, service, callback) {
     let foundTicket = _.remove(tickets, (t) => t.ticket === ticketId)[0];
+
+    // check if service matches the original service
+    if (foundTicket.service !== service) {
+        let error = {
+            code: 'INVALID_SERVICE',
+            message: `ticket ${ticketId}: the service does not match the original service. Requested ticket had [${foundTicket.service}], but validating request hat ${service} `
+        };
+        callback(error);
+        return;
+    }
+
+
+    if (!foundTicket) {
+        // no such ticket found
+        let error = {
+            code: 'INVALID_TICKET',
+            message: `ticket ${ticketId} not found or already expired and garbage collected`
+        };
+        callback(error);
+        return;
+    }
 
     // check if not expired
     if (foundTicket && foundTicket.validUntil < new Date().getTime()) {
         // ticket has expired
-        foundTicket = undefined;
+        let error = {
+            code: 'INVALID_TICKET',
+            message: `ticket ${ticketId} has already expired`
+        };
+        callback(error);
+        return;
     }
 
-    return foundTicket;
+    callback(null, foundTicket);
 }
 
 
