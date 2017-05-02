@@ -83,7 +83,7 @@ function pullTicket(ticketId, service, callback) {
     if (foundTicket.service !== service) {
         let error = {
             code: 'INVALID_SERVICE',
-            message: `ticket ${ticketId}: the service does not match the original service. Requested ticket had [${foundTicket.service}], but validating request hat ${service} `
+            message: `ticket ${ticketId}: the service does not match the original service. Requested ticket had [${foundTicket.service}], but validating request had ${service} `
         };
         callback(error);
         return;
