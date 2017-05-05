@@ -80,7 +80,7 @@ function pullTicket(ticketId, service, callback) {
     let foundTicket = _.remove(tickets, (t) => t.ticket === ticketId)[0];
 
     // check if service matches the original service
-    if (foundTicket.service !== service) {
+    if (foundTicket && foundTicket.service !== service) {
         let error = {
             code: 'INVALID_SERVICE',
             message: `ticket ${ticketId}: the service does not match the original service. Requested ticket had [${foundTicket.service}], but validating request had ${service} `
