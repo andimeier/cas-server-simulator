@@ -16,7 +16,7 @@
         </div>
 
         <div class="content">
-            <input name="username" type="text" class="input username" placeholder="Username"/>
+            <input name="username" id="username" type="text" class="input username" placeholder="Username"/>
             {{!-- <input name="password" type="password" class="input password" placeholder="Password"/> --}}
         </div>
         <input name="service" type="hidden" value="{{service}}"/>
@@ -27,6 +27,10 @@
 
     </form>
 </div>
+
+<script type="text/javascript">
+    document.getElementById("username").focus();
+</script>
 
 </body>
 </html>
