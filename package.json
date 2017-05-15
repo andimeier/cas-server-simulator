@@ -14,6 +14,7 @@
     "lodash": "~4.17",
     "path": "^0.12.7",
     "randomstring": "^1.1.5",
+    "request": "^2.81.0",
     "winston": "~0.7.3",
     "xmlbuilder": "^4.1.0"
   },

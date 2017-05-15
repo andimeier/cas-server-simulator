@@ -16,6 +16,7 @@ router.get('/tickets', tickets.getTickets);
 router.get('/login', login.login);
 router.get('/loginForm', login.submitLoginForm);
 router.post('/login', login.submitLoginForm);
+router.get('/logout', login.logout);
 
 router.get('/serviceValidate', validate.validate);
 
